@@ -1,3 +1,16 @@
 REFERENCES
 
 https://www.hindawi.com/journals/aai/2009/421425/
+
+Google News Personalization: Scalable Online Collaborative Filtering
+https://www2007.org/papers/paper570.pdf
+
+http://blog.ethanrosenthal.com/2015/11/02/intro-to-collaborative-filtering/
+
+Stanford Student project
+http://cs229.stanford.edu/proj2014/Rahul%20Makhijani,%20Saleh%20Samaneh,%20Megh%20Mehta,%20Collaborative%20Filtering%20Recommender%20Systems.pdf
+
+MMDS course slides
+https://docs.google.com/viewer?url=http%3A%2F%2Fwww.mmds.org%2Fmmds%2Fv2.1%2Fch09-recsys2.pptx
+
+https://code.facebook.com/posts/861999383875667/recommending-items-to-more-than-a-billion-people/
