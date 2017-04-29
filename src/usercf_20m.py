@@ -154,9 +154,11 @@ def compute_usercf_MSE(sparse_train_csr, sparse_test_csr, k=100):
     """ Compute MSE on the held out test data
     """
     # Compute the average rating for each user
-    data_useravg = np.empty(shape=data.shape,dtype=np.float64)
+    data = sparse_train_csr.data
+    indptr = sparse_train_csr.indptr
+    useravg = np.empty(shape=(indptr.shape[0] - 1,),dtype=np.float64)
     for user_num in range(indptr.shape[0] - 1):
-        data_useravg[indptr[user_num]: indptr[user_num + 1]] = user_sum[user_num,0] / (indptr[user_num + 1] - indptr[user_num])
+        useravg[user_num] = user_sum[user_num,0] / (indptr[user_num + 1] - indptr[user_num] + 1e-9)
     
     norms = compute_norms(sparse_train_csr)    
     n_users = sparse_train_csr.shape[0]
@@ -165,7 +167,7 @@ def compute_usercf_MSE(sparse_train_csr, sparse_test_csr, k=100):
     
     for user in range(n_users):
         usim = user_sim(user, sparse_train_csr, norms)
-        pred = user_cf(user, data_useravg[user], usim, sparse_train_csr,k)
+        pred = user_cf(user, useravg[user], usim, sparse_train_csr,k)
         
         actual = sparse_test_csr.getrow(user).toarray().squeeze(axis=0)
         test_mask = (actual != 0).astype(int)
