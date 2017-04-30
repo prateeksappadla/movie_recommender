@@ -8,7 +8,7 @@ logger = logging.getLogger('Latent Factor Model')
 logger.setLevel(logging.INFO)
 
 # Read the ratings csv file into a pandas Dataframe
-filename = '../data/ml-20m/ratings.csv'
+filename = '../data/ml-latest-small/ratings.csv'
 df = pd.read_csv(filename)
 
 n_users = df['userId'].unique().shape[0]
@@ -147,6 +147,7 @@ def user_cf(userid, user_avg, user_sim, sparse_train_csr, k=100):
     
     # pred is of shape (n_items,) and the other operand is of shape (1,n_items), hence the indexing [0,:]
     pred += (top_k_sim.reshape((1,-1)).dot(top_k_ratings) / (normalizer + 1e-9))[0,:]
+    print(pred[:10])
     return pred
 
 
@@ -170,12 +171,18 @@ def compute_usercf_MSE(sparse_train_csr, sparse_test_csr, k=100):
         pred = user_cf(user, useravg[user], usim, sparse_train_csr,k)
         
         actual = sparse_test_csr.getrow(user).toarray().squeeze(axis=0)
-        test_mask = (actual != 0).astype(int)
         
-        pred = pred * test_mask
-        mse_user = mean_squared_error(pred,actual)
-        
-        total_mse += (mse_user * np.count_nonzero(actual))
+        if np.count_nonzero(actual) > 0:
+            test_mask = (actual != 0).astype(int)
+            
+            pred = pred * test_mask
+
+            pred_nz = pred[pred.nonzero()]
+            actual_nz = actual[actual.nonzero()]
+            mse_user = mean_squared_error(pred_nz,actual_nz)
+
+            print(mse_user)        
+            total_mse += (mse_user * np.count_nonzero(actual))
         
     return total_mse/sparse_test_csr.nnz             
 
@@ -235,11 +242,11 @@ sparse_train_ucentered = sparse.csr_matrix((data_centered,indices,indptr),shape=
 logger.info("Number of non zero entries in centered matrix: " + str(sparse_train_ucentered.nnz))
 
 sparse_valid_csr = sparse_valid_coo.tocsr()
-ks = [50, 100, 200, 500]
+ks = [50] #, 100, 200, 500
 for k in ks:
     print("k: " + str(k))
     ucf_mse = compute_usercf_MSE(sparse_train_ucentered, sparse_valid_csr, k)
-    print("k: " + str(k) + "MSE: " + str(ucf_mse))
+    print("k: " + str(k) + " MSE: " + str(ucf_mse))
 
 # Compute MSE on test data with best performing k
 

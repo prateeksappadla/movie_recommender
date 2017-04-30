@@ -146,7 +146,7 @@ lambdas = [0.1, 1, 10 ]
 for k in latent_factors:
 	for lr in lrs:
 		for lambdar in lambdas:
-			Q,P = latent_factor_train(sparse_train_coo, k, lambdar, lambdar, 50, lr)
+			Q,P = latent_factor_train(sparse_train_coo, k, lambdar, lambdar, 20, lr)
 			pred = latent_factor_predict(sparse_valid_coo, Q, P)
 			actual = sparse_valid_coo.data
 			mse = mean_squared_error(pred,actual)
