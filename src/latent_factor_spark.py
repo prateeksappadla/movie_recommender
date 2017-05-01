@@ -40,6 +40,7 @@ sparse_test_coo = utils.create_sparse_coo_matrix(df_test, n_users, n_items, movi
 train_nnz = sparse_train_coo.nnz
 
 # Initialize Q and P matrices randomly
+np.random.seed(1)
 Q = np.random.uniform(0,0.1,size=(sparse_train_coo.shape[0],args.k))
 P = np.random.uniform(0,0.1,size=(sparse_train_coo.shape[1],args.k)) 
 

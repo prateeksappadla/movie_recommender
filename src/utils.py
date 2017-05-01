@@ -23,9 +23,10 @@ def split_data(df):
 			df_valid: Dataframe corresponding to validation partition
 			df_test: Dataframe corresponding to test partition
 	"""
-	df_train = df.sample(frac=0.8)
+	random_seed = 1
+	df_train = df.sample(frac=0.8, random_state=random_seed)
 	df_rem = df.loc[~df.index.isin(df_train.index)]
-	df_valid = df_rem.sample(frac=0.5)
+	df_valid = df_rem.sample(frac=0.5, random_state=random_seed)
 	df_test = df_rem.loc[~df_rem.index.isin(df_valid.index)]
 	logger.info("Shape of training dataframe: " + str(df_train.shape))
 	logger.info("Shape of validation dataframe: " + str(df_valid.shape))
