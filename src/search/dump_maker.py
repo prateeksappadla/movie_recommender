@@ -194,7 +194,7 @@ for i in range(1,164980):
 	myMap['synopsis'] = syn
 	
 	#Dump all the movie information
-	filename = 'NewMov/Movie' + str(i) + '.p'
+	filename = 'assignment4/NewMov/Movie' + str(i) + '.p'
 	pickle.dump( myMap, open( filename, "wb" ) )
 
 
