@@ -11,7 +11,9 @@ Here, we've stored upto 2 directors, 1 writer, and 10 actors, as provided in the
 
 We have provided support for 2 searches, plot search and person search. Plot search searches for a query in the movie's plot, and is accessed with the extension '/search?'. Person search searches for the query in the names of the actors, directors and writers, and is accessed with the extension '/person?'
 
-----------------------
+Currently, a compressed folder has been provided in this git repository, which can be extracted and used.
+
+	----------------------------------
 In order to run the system, navigate to the search_movies folder, then execute the following commands in a shell: 
 
 ./assignment4/reformat_all.sh
