@@ -21,6 +21,7 @@ parser.add_argument("--lr", type=float, default=0.1, help="Learning rate for Sto
 parser.add_argument("--lambdar" ,type=float, default=1.0, help="Regularization strength")
 parser.add_argument("--epochs", type=int, default=20, help="Number of epochs for Stochastic Gradient Descent")
 parser.add_argument("--filename", type=str, default="../data/ml-20m/ratings.csv", help="Path to input file")
+parser.add_argument("--master", type=str, default="local[4]", help="URL of spark master node")	
 args = parser.parse_args()
 
 
