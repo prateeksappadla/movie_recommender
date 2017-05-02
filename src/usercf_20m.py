@@ -109,12 +109,12 @@ def compute_usercf_MSE(sparse_train_csr, sparse_test_csr, k=100):
     total_mse = 0
     
     for user in range(n_users):
-        usim = user_sim(user, sparse_train_csr, norms)
-        pred = user_cf(user, useravg[user], usim, sparse_train_csr,k)
-        
         actual = sparse_test_csr.getrow(user).toarray().squeeze(axis=0)
         
         if np.count_nonzero(actual) > 0:
+            usim = user_sim(user, sparse_train_csr, norms)
+            pred = user_cf(user, useravg[user], usim, sparse_train_csr,k)
+                
             test_mask = (actual != 0).astype(int)
             
             pred = pred * test_mask

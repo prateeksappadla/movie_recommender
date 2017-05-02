@@ -6,11 +6,9 @@ import scipy.sparse as sparse
 import argparse
 import utils
 
-def configure_spark():
+def configure_spark(master):
 	# Configure Spark
 	appName = "Recommender"
-	master = "local[4]"
-
 	conf = SparkConf().setAppName(appName).setMaster(master)
 	conf.set("spark.executor.heartbeatInterval","3600s")
 	sc = SparkContext(conf=conf)
@@ -20,9 +18,10 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="User based Collaborative Filtering on Spark")
 	parser.add_argument("--k", type=int, help="Number of top similar users to use for making predictions", default=100)
 	parser.add_argument("--filename", type=str, default="../data/ml-20m/ratings.csv", help="Path to input file")
+	parser.add_argument("--master", type=str, default="local[4]", help="URL of spark master node")
 	args = parser.parse_args()
 
-	sc = configure_spark()
+	sc = configure_spark(args.master)
 
 	# Read the input file
 	df = pd.read_csv(args.filename)
@@ -80,39 +79,40 @@ if __name__ == "__main__":
 	sparse_test_csr_b = sc.broadcast(sparse_test_coo.tocsr())
 
 	def usercf(userid):
-		sparse_train = sparse_train_ucentered_b.value
-		row = sparse_train.getrow(userid)
-		
-		# Compute similarity with all other users
-		sim = row.dot(sparse_train.transpose())
-		sim /= (norms_b.value[userid] + 1e-9)
-		sim /= (np.array(norms_b.value) + 1e-9)
-		sim = np.array(sim).reshape(-1)
-
-		# Get top k similar users
-		top_k_users = sim.argsort()[-args.k-1:-1]
-		top_k_sim = sim[top_k_users]
-
-	    # Initialize all predictions to the average rating given by that user
-		pred = np.ones(sparse_train.shape[1])
-		pred *= useravg_b.value[userid]
-	    
-		top_k_ratings = np.empty((args.k,sparse_train.shape[1]),dtype=np.float64)
-		for i in range(args.k):
-			top_k_ratings[i] = sparse_train.getrow(top_k_users[i]).toarray()
-	                
-	    # Map of non-zero rating entries
-		ratings_map = (top_k_ratings != 0).astype(int)
-	    #print(ratings_map)
-	    
-		normalizer = top_k_sim.reshape((1,-1)).dot(ratings_map)
-	    #print(normalizer.shape)
-	    
-	    # pred is of shape (n_items,) and the other operand is of shape (1,n_items), hence the indexing [0,:]
-		pred += (top_k_sim.reshape((1,-1)).dot(top_k_ratings) / (normalizer + 1e-9))[0,:]
 		actual = sparse_test_csr_b.value.getrow(userid).toarray().squeeze(axis=0)
 		
 		if np.count_nonzero(actual) > 0:
+			sparse_train = sparse_train_ucentered_b.value
+			row = sparse_train.getrow(userid)
+			
+			# Compute similarity with all other users
+			sim = row.dot(sparse_train.transpose())
+			sim /= (norms_b.value[userid] + 1e-9)
+			sim /= (np.array(norms_b.value) + 1e-9)
+			sim = np.array(sim).reshape(-1)
+
+			# Get top k similar users
+			top_k_users = sim.argsort()[-args.k-1:-1]
+			top_k_sim = sim[top_k_users]
+
+		    # Initialize all predictions to the average rating given by that user
+			pred = np.ones(sparse_train.shape[1])
+			pred *= useravg_b.value[userid]
+		    
+			top_k_ratings = np.empty((args.k,sparse_train.shape[1]),dtype=np.float64)
+			for i in range(args.k):
+				top_k_ratings[i] = sparse_train.getrow(top_k_users[i]).toarray()
+		                
+		    # Map of non-zero rating entries
+			ratings_map = (top_k_ratings != 0).astype(int)
+		    #print(ratings_map)
+		    
+			normalizer = top_k_sim.reshape((1,-1)).dot(ratings_map)
+		    #print(normalizer.shape)
+		    
+		    # pred is of shape (n_items,) and the other operand is of shape (1,n_items), hence the indexing [0,:]
+			pred += (top_k_sim.reshape((1,-1)).dot(top_k_ratings) / (normalizer + 1e-9))[0,:]
+		
 			test_mask = (actual != 0).astype(int)	        
 			pred = pred * test_mask
 

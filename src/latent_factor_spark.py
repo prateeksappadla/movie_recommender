@@ -6,13 +6,14 @@ import scipy.sparse as sparse
 import utils
 import argparse
 
-# Configure Spark
-appName = "Recommender"
-master = "local[4]"
+def configure_spark(master):
+	# Configure Spark
+	appName = "Recommender"
+	conf = SparkConf().setAppName(appName).setMaster(master)
+	conf.set("spark.executor.heartbeatInterval","3600s")
+	sc = SparkContext(conf=conf)
+	return sc
 
-conf = SparkConf().setAppName(appName).setMaster(master)
-conf.set("spark.executor.heartbeatInterval","3600s")
-sc = SparkContext(conf=conf)
 
 parser = argparse.ArgumentParser(description="Latent Factor Model")
 parser.add_argument("--k", type=int, default=100, help="Number of latent factors")
@@ -21,6 +22,10 @@ parser.add_argument("--lambdar" ,type=float, default=1.0, help="Regularization s
 parser.add_argument("--epochs", type=int, default=20, help="Number of epochs for Stochastic Gradient Descent")
 parser.add_argument("--filename", type=str, default="../data/ml-20m/ratings.csv", help="Path to input file")
 args = parser.parse_args()
+
+
+# Configure Spark
+sc = configure_spark(args.master)
 
 # Read the ratings file into a pandas Dataframe object
 df = pd.read_csv(args.filename)
