@@ -6,11 +6,12 @@ Download the dataset from https://grouplens.org/datasets/movielens/. Unzip the d
 
 usage: usercf_20m.py [-h] [--k K] [--filename FILENAME]
 
-optional arguments:
-  -h, --help           show this help message and exit
-  --k K                Number of top similar users to use for making
-                       predictions
-  --filename FILENAME  Path to input file
+    optional arguments:
+      -h, --help           show this help message and exit
+      --k K                Number of top similar users to use for making
+                           predictions
+      --filename FILENAME  Path to input file
+
   
 -----------------------------------------------------------------------
 
@@ -21,14 +22,15 @@ usage: latent_factor_20m.py [-h] [--k K] [--lr LR] [--lambdar LAMBDAR]
 
 Latent Factor Model
 
-optional arguments:
-  -h, --help           show this help message and exit
-  --k K                Number of latent factors
-  --lr LR              Learning rate for Stochastic Gradient Descent
-  --lambdar LAMBDAR    Regularization strength
-  --epochs EPOCHS      Number of epochs for Stochastic Gradient Descent
+    optional arguments:
+      -h, --help           show this help message and exit
+      --k K                Number of latent factors
+      --lr LR              Learning rate for Stochastic Gradient Descent
+      --lambdar LAMBDAR    Regularization strength
+      --epochs EPOCHS      Number of epochs for Stochastic Gradient 
+
+Descent
   --filename FILENAME  Path to input file
-  
 ------------------------------------------------------------------------
 
 Need Spark to run the following scripts
@@ -39,12 +41,13 @@ usage: $SPARK_HOME/bin/spark-submit --master "url of spark master node" usercf_s
 
 User based Collaborative Filtering on Spark
 
-optional arguments:
-  -h, --help           show this help message and exit
-  --k K                Number of top similar users to use for making
-                       predictions
-  --filename FILENAME  Path to input file
-  --master MASTER      URL of spark master node
+    optional arguments:
+      -h, --help           show this help message and exit
+      --k K                Number of top similar users to use for making
+                           predictions
+      --filename FILENAME  Path to input file
+      --master MASTER      URL of spark master node
+
   
 -----------------------------------------------------------------------
 **latent_factor_spark.py**
@@ -55,13 +58,13 @@ usage: $SPARK_HOME/bin/spark-submit --master "url of spark master node" latent_f
 
 Latent Factor Model
 
-optional arguments:
-  -h, --help           show this help message and exit
-  --k K                Number of latent factors
-  --lr LR              Learning rate for Stochastic Gradient Descent
-  --lambdar LAMBDAR    Regularization strength
-  --epochs EPOCHS      Number of epochs for Stochastic Gradient Descent
-  --filename FILENAME  Path to input file
-  --master MASTER      URL of spark master node
-  
+    optional arguments:
+      -h, --help           show this help message and exit
+      --k K                Number of latent factors
+      --lr LR              Learning rate for Stochastic Gradient Descent
+      --lambdar LAMBDAR    Regularization strength
+      --epochs EPOCHS      Number of epochs for Stochastic Gradient Descent
+      --filename FILENAME  Path to input file
+      --master MASTER      URL of spark master node
 
+  
