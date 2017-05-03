@@ -30,7 +30,7 @@ def latent_factor_train(sparse_ratings_coo, k=500, lambda1=1, lambda2=1, epochs=
 	"""   
     # Initialize the latent factor matrices randomly
     # Set a seed manually to be able to reproduce results
-    np.random.seed(1)
+	np.random.seed(1)
 	Q = np.random.uniform(0,0.1,size=(sparse_ratings_coo.shape[0],k))
 	P = np.random.uniform(0,0.1,size=(sparse_ratings_coo.shape[1],k))   
 	for ep in range(1,epochs+1):

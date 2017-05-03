@@ -50,8 +50,6 @@ np.random.seed(1)
 Q = np.random.uniform(0,0.1,size=(sparse_train_coo.shape[0],args.k))
 P = np.random.uniform(0,0.1,size=(sparse_train_coo.shape[1],args.k)) 
 
-sparse_train_broadcast = sc.broadcast(sparse_train_coo)
-
 rating_entries = zip(sparse_train_coo.row, sparse_train_coo.col, sparse_train_coo.data)
 rating_entries_p = sc.parallelize(rating_entries)
 
